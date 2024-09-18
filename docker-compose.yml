@@ -1,0 +1,24 @@
+services:
+  app:
+    container_name: ceeaiv_veracruz
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    ports:
+      - "8000:8000"
+    entrypoint: ["sh", "-c", "/var/www/startup.sh > /dev/null 2>&1"]
+
+  nginx:
+    image: nginx:alpine
+    container_name: ceeaiv_nginx
+    restart: always
+    ports:
+      - "8001:8001"  # Mapea el puerto 80 del contenedor al puerto 8000 en el host
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/:/etc/nginx/conf.d/
+      - ./docker/nginx/certs/:/etc/nginx/certs/
